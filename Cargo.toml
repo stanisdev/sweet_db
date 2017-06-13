@@ -1,0 +1,5 @@
+[package]
+
+name = "sweet_db"
+version = "0.0.1"
+authors = [ "Stan <javascript.nodejs.developer@gmail.com>" ]
