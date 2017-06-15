@@ -1,14 +1,17 @@
 mod args;
-mod file_worker;
 
 fn main() {
-    let args = match args::init() {
+
+    // let commands = args::Command::new();
+    let commands = match args::Command::new() {
         None => {
-            println!("Commands cannot be found");
+            println!("Any commands was not entered");
             return;
         },
-        Some(args) => args,
+        Some(instance) => instance,
     };
-    let mut worker = file_worker::FileWorker::new();
-    worker.read();
+    match commands.execute() {
+        Err(mess) => println!("{}", mess),
+        Ok(_) => {}
+    }
 }

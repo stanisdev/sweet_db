@@ -1,10 +1,13 @@
+extern crate file_worker;
+
 use std::env;
 use std::fs::OpenOptions;
 use std::fs::File;
 use std::io::{Write, BufWriter};
 use std::io::SeekFrom;
 use std::io::Seek;
-use std::io::{Read, BufReader};
+use std::io::{BufReader};
+use std::io::prelude::*;
 
 pub struct FileWorker {
     descriptor: File
@@ -12,9 +15,7 @@ pub struct FileWorker {
 
 impl FileWorker {
 
-    /**
-     * Create instance
-     */
+    // Create instance
     pub fn new() -> FileWorker {
         let mut file_path = env::current_dir().unwrap();
         file_path.push("src/data/data.txt");
@@ -31,9 +32,7 @@ impl FileWorker {
         };
     }
 
-    /**
-     * Write string
-     */
+    // * Write string
     pub fn write(&mut self) {
         self.descriptor.seek(SeekFrom::End(0));
 
@@ -45,15 +44,14 @@ impl FileWorker {
         }
     }
 
-    /**
-     * Read from file
-     */
-    pub fn read(&self) {
-        let mut s = String::new();
-        let mut br = BufReader::new(&self.descriptor);
-        match br.read_to_string(&mut s) {
-            Err(why) => panic!("File cannot be read: {}", why),
-            Ok(_) => println!("Data contains:\n{}", s),
+    // Read from file
+    pub fn read(&mut self) {
+        let br = BufReader::new(&self.descriptor);
+        for line in br.lines() {
+            match line {
+                Err(_) => {},
+                Ok(data) => println!("{}", data),
+            }
         }
     }
 }
