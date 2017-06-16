@@ -1,8 +1,11 @@
 use std::env;
+use std::io;
+use super::core;
 
 pub struct Command {
-    argument: String,
-    parameter: String,
+    pub argument: String,
+    pub parameter: String,
+    pub result: Result<&'static str, &'static str>,
 }
 
 impl Command {
@@ -22,26 +25,21 @@ impl Command {
                 }
                 return Some(Command {
                     argument: parsed[0].to_owned(),
-                    parameter: parsed[1].to_owned()
+                    parameter: parsed[1].to_owned(),
+                    result: Ok("")
                 });
             },
         };
     }
 
     // Check argument existence
-    pub fn execute(&self) -> Result<(), &'static str> {
+    pub fn run(&mut self) -> Result<&'static str, &'static str> {
         let args = vec!["add", "remove", "exists", "find"];
         let found = args.into_iter().filter(|&arg| arg == self.argument).collect::<Vec<&str>>();
         if found.len() < 1 {
             return Err("Command not found");
         }
-
-        // let worker = file_worker::FileWorker.new();
-        // match self.argument {
-        //     "add".to_string() => {
-        //         let worker = file_worker.new();
-        //     }
-        // }
-        return Ok(());
+        core::execute_command(self);
+        return self.result;
     }
 }
